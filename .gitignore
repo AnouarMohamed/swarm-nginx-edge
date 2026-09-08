@@ -1,0 +1,13 @@
+.env
+.env.*
+!*.env.example
+auth/infra.htpasswd
+*.log
+*.pem
+*.key
+acme.json
+letsencrypt/
+certbot/
+__pycache__/
+*.pyc
+.DS_Store

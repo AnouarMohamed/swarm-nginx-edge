@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  nginx-bootstrap:
+    image: ${NGINX_IMAGE:-nginx:1.30.3-alpine@sha256:0d3b80406a13a767339fbe2f41406d6c7da727ab89cf8fae399e81f780f814d1}
+    environment:
+      NGINX_ENTRYPOINT_QUIET_LOGS: "1"
+    ports:
+      - "80:80"
+    volumes:
+      - nginx-certbot-webroot:/var/www/certbot:ro
+      - nginx-logs:/var/log/nginx
+    configs:
+      - source: nginx_main_conf
+        target: /etc/nginx/nginx.conf
+      - source: nginx_bootstrap_conf
+        target: /etc/nginx/conf.d/default.conf
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1/healthz | grep -qx ok"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    stop_grace_period: 30s
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+      placement:
+        constraints:
+          - node.role == manager
+
+volumes:
+  nginx-certbot-webroot:
+    external: true
+  nginx-logs:
+    external: true
+
+configs:
+  nginx_main_conf:
+    name: ${CONFIG_PREFIX:-nginx-edge-bootstrap}_main_conf_${NGINX_CONFIG_VERSION:-v1}
+    file: ./nginx.conf
+  nginx_bootstrap_conf:
+    name: ${CONFIG_PREFIX:-nginx-edge-bootstrap}_bootstrap_conf_${NGINX_CONFIG_VERSION:-v1}
+    file: ./conf.d/bootstrap.conf

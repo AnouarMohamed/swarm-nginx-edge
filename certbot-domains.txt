@@ -1,0 +1,15 @@
+db-admin.example.com
+db-development.example.com
+mongodb-admin.example.com
+portainer.example.com
+jenkins.example.com
+glpi.example.com
+superset.example.com
+passbolt.example.com
+wordpress-school.example.com
+wordpress-invoice.example.com
+wordpress-portfolio.example.com
+wordpress-community.example.com
+wordpress-resume.example.com
+wordpress-blog.example.com
+edge-status.example.com
